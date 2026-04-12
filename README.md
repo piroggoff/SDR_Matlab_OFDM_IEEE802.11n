@@ -2,7 +2,8 @@
 
 This project represents simplified implementation of IEEE802.11n format. The main goal is to explore and recreate worldwide-used standard that is a cornerstone of Wi-Fi 4 technology.
 
-![Scheme](https://raw.githubusercontent.com/piroggoffSDR_Matlab_OFDM_802.11n/master/media/Transcieve_scheme.png)
+## Transceive scheme
+<img src="https://raw.githubusercontent.com/piroggoff/SDR_Matlab_OFDM_IEEE802.11n/master/media/Transcieve_scheme.png" width=800>
 
 # Used hardware
 

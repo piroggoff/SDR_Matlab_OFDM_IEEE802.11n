@@ -1,24 +1,23 @@
 # SDR_Matlab_OFDM_802.11n
-[![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/MeowLucian/SDR_Matlab_OFDM_802.11n/blob/master/LICENSE)
 
-This simple OFDM demo is based on IEEE 802.11n OFDM format for testing SDR hardware.
+This project represents simplified implementation of IEEE802.11n format. The main goal is to explore and recreate worldwide-used standard that is a cornerstone of Wi-Fi 4 technology.
 
-Using Software Designed Radio (SDR) to transmit OFDM signals at 5 GHz.
+![Scheme](https://raw.githubusercontent.com/piroggoffSDR_Matlab_OFDM_802.11n/master/media/Transcieve_scheme.png)
 
-Transmitter and Receiver hardware : Zedboard (Xilinx Zynq®-7000) + AD9361 (Analog Device-FMCOMMS3)
+# Used hardware
 
-![Hardware](https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/Hardware.jpg)
+* Development and Evaluation Board "Zedboard Zynq®-7000"
+* RF Agile Transceiver Analog Devices AD9361 
 
-# Software needed :
+# Used software
 
-* Matlab R2016a
-* support package for Xilinx Zynq-Based Radio (R2016a version)
+* Matlab R2025b
+* Support package for Xilinx Zynq-Based Radio
 
-Before executing this code, please follow this [tutorial](https://www.mathworks.com/help/supportpkg/xilinxzynqbasedradio/ug/install-support-package-for-xilinx-zynq-based-radio.html) to install support package for Xilinx Zynq-Based Radio in Matlab.
+# How to run :
+Run `Hardware_TX.m` and `Hardware_RX.m` in separate Matlab session one by one (Wait for each instance to initialize).
 
-# Code Structure :
-Please open multiple Matlab windows to run `Hardware_TX.m` and `Hardware_RX.m` respectively.
-
+# Code structure
 ## Hardware_TX.m
 > TX_signal.mat
 
@@ -34,45 +33,9 @@ Please open multiple Matlab windows to run `Hardware_TX.m` and `Hardware_RX.m` r
 * HTL_k_slot_Frequency.mat
 * setstate0_RX.m
 
-## RX_test
+## RX_test (Debug mode necessaries)
 * RX.mat
 * RX2.mat
-
-# GUI :
-* GUI_TX
-
-![Program GUI_TX](https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/GUI_TX.png)
-
-* GUI_RX
-
-![Program GUI_RX](https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/GUI_RX.png)
-
-Video Demo : https://www.youtube.com/watch?v=CiHpd1Z8qK8
-![Program GUI gif](https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/GUI_gif.gif)
-
-# System Model :
-
-## OFDM Block Diagram
-
-<img src="https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/OFDM_Block_Diagram.png" width="800">
-
-## Code Function :
-
-### Implemented
-
-* Data Signal Mapping
-* Packet Detection
-* Coarse/Fine Frequency Offset Estimation & Compensation
-* Channel Estimation & One-Tap Equalizer
-* Data De-Mapping
-
-### Not implemented yet
-
-* AGC (Auto Gain Control)
-* Fine Symbol Timing Estimation
-* Convolutional Decoding
-* De-Interleaving
-* Frame check calculation (It assumes every packet is the same length)
 
 ## TX System Model
 <img src="https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/TX%20System%20Model.png" width="500">
@@ -98,28 +61,6 @@ Video Demo : https://www.youtube.com/watch?v=CiHpd1Z8qK8
 | Baseband Sample Rate (Bandwidth) | 20 MHz                           |
 | Ts (Sampling time)               | 50 ns                            |
 | Samples Per Frame                | 3500                             |
-| PC Host IP address               | 192.168.3.1                      |
-| TX IP address                    | 192.168.3.2                      |
-| RX IP address                    | 192.168.3.3                      |
-
-## The way to change Hardware IP / Mac address
-
-Edit `newip.sh` file in SD card
-
-```
-# Flush existing config
-ip addr flush dev eth0
-ip link set dev eth0 down
-# Set up new config
-ip addr add 192.168.3.3/24 dev eth0
-ip link set eth0 address 00:0A:35:00:01:23
-ip route add default via 192.168.3.1
-ip link set dev eth0 up
-```
-
-Then, use router DHCP hand setting mode to distribute network configuration parameters :
-
-![Router setting](https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/Router%20setting.PNG)
 
 ## RX System Model
 <img src="https://raw.githubusercontent.com/MeowLucian/SDR_Matlab_OFDM_802.11n/master/Picture/RX%20System%20Model.png" width="300">

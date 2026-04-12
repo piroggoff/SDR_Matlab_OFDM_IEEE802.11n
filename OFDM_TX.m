@@ -1,9 +1,9 @@
-close all;clear;clc;j=1i;
+close all; clearvars;
 %% Parameter
 N_FFT = 64;
 %% Short_preamble
-S_k = sqrt(13/6)*[0,0,1+j,0,0,0,-1-j,0,0,0,1+j,0,0,0,-1-j,0,0,0,-1-j,0,0,0,1+j,0,0,0,0,0,0,0,-1-j,0,0,0,-1-j,0,0,0,1+j,0,0,0,1+j,0,0,0,1+j,0,0,0,1+j,0,0]; % [1x53]
-virtual_subcarrier = zeros(1,N_FFT-length(S_k)); % [1x11]
+S_k = sqrt(13/6)*[0,0,1+1i,0,0,0,-1-1j,0,0,0,1+1j,0,0,0,-1-1j,0,0,0,-1-1j,0,0,0,1+1j,0,0,0,0,0,0,0,-1-1j,0,0,0,-1-1j,0,0,0,1+1j,0,0,0,1+1j,0,0,0,1+1j,0,0,0,1+1j,0,0]; % [1x53]
+virtual_subcarrier = zeros(1, N_FFT-length(S_k)); % [1x11]
 Short_preamble_slot_Frequency = [virtual_subcarrier(1:6),S_k,virtual_subcarrier(7:11)]; % [1x64]
 Short_preamble_slot_Time = ifft(ifftshift(Short_preamble_slot_Frequency)); % [1x64]
 Short_preamble = repmat(Short_preamble_slot_Time(1:16),1,10); % [1x160]
@@ -32,8 +32,8 @@ TX1_HT_L = [Set_0_slot_Time(49:64),Set_1_slot_Time,Set_0_slot_Time]; % [1x144]
 M = 4; % QPSK
 load('data_Payload_1');
 load('data_Payload_2');
-data1_slot_Frequency = pskmod(data_Payload_1,M,pi/4);  % [1x48]
-data2_slot_Frequency = pskmod(data_Payload_2,M,pi/4);  % [1x48]
+data1_slot_Frequency = pskmod(data_Payload_1,M,pi/M);  % [1x48]
+data2_slot_Frequency = pskmod(data_Payload_2,M,pi/M);  % [1x48]
 pilot = [1,1,1,-1]; % [1x4]
 virtual_subcarrier = zeros(1,11); % [1x11]
 data11_slot_Frequency = [virtual_subcarrier(1:6),data1_slot_Frequency(1:5),pilot(1),data1_slot_Frequency(6:18),pilot(2),data1_slot_Frequency(19:24),0,data1_slot_Frequency(25:30),pilot(3),data1_slot_Frequency(31:43),pilot(4),data1_slot_Frequency(44:48),virtual_subcarrier(7:11)]; % [1x64]
@@ -53,8 +53,8 @@ Frame_2_OVR_sampling = oversamp(Frame_2,length(Frame_2),OVR); % [1x1248]
 TX_signal = Frame_1_OVR_sampling;
 TX_signal_2 = Frame_2_OVR_sampling;
 %% Plot
-subplot(2,1,1),stem(real(TX_signal));
-subplot(2,1,2),stem(real(TX_signal_2));
+subplot(2,1,1), stem(real(TX_signal));
+subplot(2,1,2), stem(real(TX_signal_2));
 %% Save
 save TX_signal TX_signal
 save TX_signal_2 TX_signal_2

@@ -11,3 +11,4 @@ Parameters_struct.Long_preamble_slot_Frequency = Long_preamble_slot_Frequency;
 Parameters_struct.HTL_k_slot_Frequency = HTL_k_slot_Frequency;
 Parameters_struct.data_Payload_1 = data_Payload_1;
 Parameters_struct.data_Payload_2 = data_Payload_2;
+Parameters_struct.IPAddress = '169.254.111.67';

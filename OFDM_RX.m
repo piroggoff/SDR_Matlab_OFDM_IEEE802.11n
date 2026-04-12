@@ -1,13 +1,13 @@
 function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_no_Equalizer,RX_Payload_1_no_pilot,RX_Payload_2_no_pilot,BER] = OFDM_RX(RX,Parameters_struct)
 %% Debug mode
-Debug_mode = 'off';
+Debug_mode = 'on';
 if strcmp(Debug_mode,'on')
-   clearvars -except Debug_mode;close all;clc;
+   clearvars -except Debug_mode; close all; clc;
    Global_Parameters;
    load('RX');
 end
-%% j Parameter
-j = 1i;
+
+
 %% RX
 RX_signal = RX(1,:); % [1x3500]
 RX_signal_2 = RX(2,:); % [1x3500]
@@ -45,6 +45,7 @@ M_n = (abs(C_n).^2)./(P_n.^2);
 % end
 % M_n_2 = (abs(C_n_2).^2)./(P_n_2.^2);
 %% Packet_select
+idx=0; #!спорно
 Threshold = 0.78;
 loc = find(M_n>Threshold);
 temp_1 = [loc,0];
@@ -87,19 +88,19 @@ Frame_DWN_sampling_2 = RX_signal_2(idx_2:OVR:OVR*624+idx_2-1); % [1x624] Frame l
 Short_preamble_slot_length = 16;
 z = Frame_DWN_sampling(Short_preamble_slot_length*5+1:Short_preamble_slot_length*6)*Frame_DWN_sampling(Short_preamble_slot_length*6+1:Short_preamble_slot_length*7)'; % [1x16]*[16x1]
 f_Coarse_est = (-1/(2*pi*Short_preamble_slot_length*Parameters_struct.Ts))*angle(z);
-Frame_After_Coarse = Frame_DWN_sampling.*exp(-j*2*pi*f_Coarse_est*Parameters_struct.Ts*(0:624-1)); % [1x624]
+Frame_After_Coarse = Frame_DWN_sampling.*exp(-1j*2*pi*f_Coarse_est*Parameters_struct.Ts*(0:624-1)); % [1x624]
 %
 z_2 = Frame_DWN_sampling_2(Short_preamble_slot_length*5+1:Short_preamble_slot_length*6)*Frame_DWN_sampling_2(Short_preamble_slot_length*6+1:Short_preamble_slot_length*7)'; % [1x16]*[16x1]
 f_Coarse_est_2 = (-1/(2*pi*Short_preamble_slot_length*Parameters_struct.Ts))*angle(z_2);
-Frame_After_Coarse_2 = Frame_DWN_sampling_2.*exp(-j*2*pi*f_Coarse_est_2*Parameters_struct.Ts*(0:624-1)); % [1x624]
+Frame_After_Coarse_2 = Frame_DWN_sampling_2.*exp(-1j*2*pi*f_Coarse_est_2*Parameters_struct.Ts*(0:624-1)); % [1x624]
 %% Fine CFO Estimation
 z = Frame_After_Coarse(Short_preamble_slot_length*12+1:Short_preamble_slot_length*16)*Frame_After_Coarse(Short_preamble_slot_length*16+1:Short_preamble_slot_length*20)'; % [1x64]*[64x1]=[1x1]
 f_Fine_est = (-1/(2*pi*64*Parameters_struct.Ts))*angle(z);
-Frame_After_Fine = Frame_After_Coarse.*exp(-j*2*pi*f_Fine_est*Parameters_struct.Ts*(0:624-1)); % [1x160]
+Frame_After_Fine = Frame_After_Coarse.*exp(-1j*2*pi*f_Fine_est*Parameters_struct.Ts*(0:624-1)); % [1x160]
 %
 z_2 = Frame_After_Coarse_2(Short_preamble_slot_length*12+1:Short_preamble_slot_length*16)*Frame_After_Coarse_2(Short_preamble_slot_length*16+1:Short_preamble_slot_length*20)'; % [1x64]*[64x1]=[1x1]
 f_Fine_est_2 = (-1/(2*pi*64*Parameters_struct.Ts))*angle(z_2);
-Frame_After_Fine_2 = Frame_After_Coarse_2.*exp(-j*2*pi*f_Fine_est_2*Parameters_struct.Ts*(0:624-1)); % [1x160]
+Frame_After_Fine_2 = Frame_After_Coarse_2.*exp(-1j*2*pi*f_Fine_est_2*Parameters_struct.Ts*(0:624-1)); % [1x160]
 %% Symbol Timing Estimation
 %% Channel Estimation
 Long_preamble_HT_1 = Frame_After_Fine([1:64]+320+16);

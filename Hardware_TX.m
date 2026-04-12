@@ -2,13 +2,13 @@ clear;close all;clc;j=1i;
 Global_Parameters;
 %% Hardware Parameters
 Mode='transmitRepeat'; % Select Mode
-tx_object = sdrtx('ZedBoard and FMCOMMS2/3/4', ...
-           'IPAddress',            '192.168.3.2', ...
+tx_object = sdrtx('AD936x', ...
+           'IPAddress',            Parameters_struct.IPAddress, ...
            'CenterFrequency',      Parameters_struct.CenterFrequency, ...
            'BasebandSampleRate',   Parameters_struct.Bandwidth, ...  % Bandwidth
            'Gain',                 0, ...
            'ChannelMapping',       [1,2]);
-%          'EnableBurstMode',1,...
+           % 'EnableBurstMode',1,
 
 %% Button Setting
 figure('Name','TX','NumberTitle','off');
@@ -25,6 +25,7 @@ TX_Hardware_2 = repmat(TX_signal_2.',4,1); % Transmit Data must be >= 4096 % [49
 state = 1;
 %% Main
 switch Mode
+
     case 'step'
         while(state == 1)
            step(tx_object,[TX_Hardware,TX_Hardware_2]);
@@ -33,7 +34,7 @@ switch Mode
            drawnow;
         end
         release(tx_object);
-
+        
     case 'transmitRepeat'
         transmitRepeat(tx_object,[TX_Hardware,TX_Hardware_2]);
         % ----- Button Behavior -----%

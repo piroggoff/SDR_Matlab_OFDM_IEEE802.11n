@@ -1,6 +1,7 @@
 clear;close all;clc;j=1i;
 Global_Parameters;
-%% Hardware Parameters
+
+% Hardware Parameters
 Mode='transmitRepeat'; % Select Mode
 tx_object = sdrtx('AD936x', ...
            'IPAddress',            Parameters_struct.IPAddress, ...
@@ -10,20 +11,24 @@ tx_object = sdrtx('AD936x', ...
            'ChannelMapping',       [1,2]);
            % 'EnableBurstMode',1,
 
-%% Button Setting
+% Button Setting
 figure('Name','TX','NumberTitle','off');
-TransmittingDisplay = uicontrol('Style', 'text', 'Position',[55,150,155,35],'String', 'Transmitting','FontSize',20,'HorizontalAlignment','left','BackgroundColor',[0.937 0.867 0.867]);
+TransmittingDisplay = uicontrol('Style', 'text', 'Position',[55,150,155,35],'String', 'Данные в процессе передачи', ...
+    'FontSize',20,'HorizontalAlignment','left','BackgroundColor',[0.937 0.867 0.867]);
 button = uicontrol; % Generate GUI button
-set(button,'String','Stop !','Position',[80 50 100 60]); % Add "Stop !" text
+set(button,'String','Стоп','Position',[80 50 100 60]); % Add "Stop !" text
 set(gcf,'Units','centimeters','position',[3 3 7 6]); % Set the postion of GUI
-%% TX Load
+
+% TX Load
 load('TX_signal'); % [1x1248]
 load('TX_signal_2'); % [1x1248]
+
 % transmitRepeat Mode
 TX_Hardware = repmat(TX_signal.',4,1); % Transmit Data must be >= 4096 % [4992x1]
 TX_Hardware_2 = repmat(TX_signal_2.',4,1); % Transmit Data must be >= 4096 % [4992x1]
 state = 1;
-%% Main
+
+% Main
 switch Mode
 
     case 'step'

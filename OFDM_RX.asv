@@ -5,7 +5,7 @@ function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_
     if strcmp(Debug_mode,'on')
        clearvars -except Debug_mode; close all; clc;
        Global_Parameters;
-       load('RX.mat'); %#ok<LOAD>
+       load("RX.mat"); %#ok<LOAD>
     end
     
     %% RX channels separation
@@ -14,8 +14,8 @@ function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_
 
     %% Packet Detection (based on Schimdl & Cox algorithm)
 
-    D = 16;     % Delay (Short preamble length)
-    L = 2*D;    % Autocorrelation window length
+    D = 16; % Delay (Short preamble length)
+    L = 2*D; % Autocorrelation window length
 
     C_k = zeros(1,L); % Buffer arrays
     P_k = zeros(1,L);
@@ -119,17 +119,18 @@ function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_
     H_hat_time_22 = ifft(ifftshift(reshape(H_hat(2,2,1:64),1,64)));
     H_hat_time = [H_hat_time_11;H_hat_time_12;H_hat_time_21;H_hat_time_22];
 
-    %% One tap Equalizer with zero-forcing
+    %% One tap Equalizer with zero-forcing !! REVIEW !!
     
     RX_Payload_1_time = Frame_After_Fine(464+1:464+80); % [1x80]
     RX_Payload_1_no_CP = RX_Payload_1_time(17:end); % [1x64]
     RX_Payload_1_Frequency = fftshift(fft(RX_Payload_1_no_CP)); % [1x64]
-    
+    % RX_Payload_1_Frequency_Equalizer = RX_Payload_1_Frequency./H_est; % [1x64]
     
     RX_Payload_2_time = Frame_After_Fine_2(464+1:464+80); % [1x80]
     RX_Payload_2_no_CP = RX_Payload_2_time(17:end); % [1x64]
     RX_Payload_2_Frequency = fftshift(fft(RX_Payload_2_no_CP)); % [1x64]
-   
+    % RX_Payload_2_Frequency_Equalizer = RX_Payload_2_Frequency./H_est; % [1x64]
+    
     RX_Payload_Frequency = [RX_Payload_1_Frequency;RX_Payload_2_Frequency];
     
     RX_Payload_Frequency_Equalizer = zeros(2,64);

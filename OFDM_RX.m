@@ -86,7 +86,7 @@ function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_
     Long_preamble_HT_1 = Frame_After_Fine([1:64]+320+16);
     Long_preamble_HT_2 = Frame_After_Fine([65:128]+320+16);
     Long_preamble_HT_3 = Frame_After_Fine_2([1:64]+320+16);
-    Long_preamble_HT_4 = Frame_After_Fine_2([65:128]+320+16);
+    Long_preamble_HT_4 = Frame_After_Fine_2([65:128]+320+16); 
     Long_preamble_HT_1_After_FFT = fftshift(fft(Long_preamble_HT_1));
     Long_preamble_HT_2_After_FFT = fftshift(fft(Long_preamble_HT_2));
     Long_preamble_HT_3_After_FFT = fftshift(fft(Long_preamble_HT_3));
@@ -139,6 +139,7 @@ function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_
     RX_Payload_1_Frequency_Equalizer = RX_Payload_Frequency_Equalizer(1,:);
     RX_Payload_2_Frequency_Equalizer = RX_Payload_Frequency_Equalizer(2,:);
 
+    
     %% De-Mapping
     RX_Payload_1_no_Equalizer = [RX_Payload_1_Frequency(7:11),RX_Payload_1_Frequency(13:25),RX_Payload_1_Frequency(27:32),RX_Payload_1_Frequency(34:39),RX_Payload_1_Frequency(41:53),RX_Payload_1_Frequency(55:59)]; % [1x48]
     RX_Payload_1_no_pilot = [RX_Payload_1_Frequency_Equalizer(7:11),RX_Payload_1_Frequency_Equalizer(13:25),RX_Payload_1_Frequency_Equalizer(27:32),RX_Payload_1_Frequency_Equalizer(34:39),RX_Payload_1_Frequency_Equalizer(41:53),RX_Payload_1_Frequency_Equalizer(55:59)]; % [1x48]

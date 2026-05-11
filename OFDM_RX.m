@@ -4,8 +4,8 @@ function [M_n,Threshold_graph,H_hat_time,RX_Payload_1_no_Equalizer,RX_Payload_2_
     Debug_mode = 'on';
     if strcmp(Debug_mode,'on')
        clearvars -except Debug_mode; close all; clc;
-       Global_Parameters;
-       load('RX.mat'); %#ok<LOAD>
+       Parameters_struct = Global_Parameters;
+       load('RX.mat', 'RX');
     end
     
     %% RX channels separation

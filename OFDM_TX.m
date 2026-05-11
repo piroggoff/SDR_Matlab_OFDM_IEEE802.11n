@@ -72,5 +72,4 @@ function OFDM_TX
     %% Save
     save('TX_signal.mat', 'TX_signal');
     save('TX_signal_2.mat', 'TX_signal_2');
-    save('HTL_k_slot_Frequency.mat', 'HTL_k_slot_Frequency');
 end

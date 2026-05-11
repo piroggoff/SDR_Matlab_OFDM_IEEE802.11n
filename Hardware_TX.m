@@ -13,7 +13,7 @@ function Hardware_TX
 
     % UI & Button setup
     command_window = figure('Name', 'TX', 'NumberTitle', 'off', 'Units', 'normalized', ...
-                            'Position',[0.4 0.4 0.2 0.2], ...
+                            'Position',[0.4 0.4 0.2 0.4], ...
                             'MenuBar','none', ...
                             'CloseRequestFcn', @onClose);
     
@@ -26,6 +26,20 @@ function Hardware_TX
     button = uicontrol(command_window, 'Style', 'pushbutton',...
                        'Units','normalized','Position', [0.3 0.2 0.4 0.3],...
                        'String', 'START', 'Callback', @onToggle);
+                
+    modeMenu = uicontrol(command_window, 'Style','popupmenu', ...
+                        'Units','normalized', 'Position',[0.1 0.5 0.8 0.12], ...
+                        'String', {'transmitRepeat','step'}, ...
+                        'Value', 1, ...
+                        'Callback', @onModeChange);
+
+    stepButton = uicontrol(command_window, 'Style','pushbutton', ...
+                           'Units','normalized', 'Position',[0.3 0.05 0.4 0.12], ...
+                           'String','STEP', 'Callback', @onStep, ...
+                           'Visible','off', 'Enable','off');
+    
+    txMode = 'transmitRepeat';
+    isTxOn = false;
     
     % Data existence check
     
@@ -49,27 +63,88 @@ function Hardware_TX
     
     % Callback functions
     
-    function onToggle(src,~)
-        if ~isTxOn
-            transmitRepeat(tx_object, TX_Frame);
-            isTxOn = true;
-            if isgraphics(src)
-                set(src,'String','STOP');
-                set(statement_text,'String','Transmitting');
+    function onModeChange(src, ~)
+        if isTxOn
+            items = get(src,'String');
+            set(src,'Value', find(strcmp(items, txMode), 1, 'first'));
+            return;
+        end
+
+        items = get(src,'String');
+        txMode = items{get(src,'Value')};
+        
+        if strcmp(txMode, 'transmitRepeat')
+            if isgraphics(stepButton)
+                set(stepButton,'Visible','off');
             end
-        else
-            if exist('tx_object','var')
-                release(tx_object);
-            end
-            isTxOn = false;
-            if isgraphics(src)
-                set(src,'String','START');
-                set(statement_text,'String','Stopped');
+        elseif strcmp(txMode, 'step')
+            if isgraphics(stepButton)
+                set(stepButton,'Visible','on');
             end
         end
     end
     
+    function onToggle(src,~)
+        %START
+        if ~isTxOn
+            isTxOn = true;
+    
+            if isgraphics(src)
+                set(src,'String','STOP');
+            end
+            if isgraphics(modeMenu)
+                set(modeMenu,'Enable','off');
+            end
+    
+            if strcmp(txMode,'transmitRepeat')
+                if isgraphics(statement_text)
+                    set(statement_text,'String','Transmitting: transmitRepeat');
+                end
+                transmitRepeat(tx_object, TX_Frame);
+                return;
+            else
+                % txMode == 'step': ничего не передаём автоматически
+                if isgraphics(statement_text)
+                    set(statement_text,'String','Step mode: press STEP');
+                end
+                if isgraphics(stepButton)
+                    set(stepButton, 'Enable', 'on');
+                end
+            end
+        else
+            % STOP
+            isTxOn = false;
+    
+            if exist('tx_object','var')
+                release(tx_object);
+            end
+    
+            if isgraphics(src)
+                set(src,'String','START');
+            end
+            if isgraphics(statement_text)
+                set(statement_text,'String','Stopped');
+            end
+            if isgraphics(modeMenu)
+                set(modeMenu,'Enable','on');
+            end
+            if strcmp(txMode, 'step')
+                if isgraphics(stepButton)
+                    set(stepButton,'Enable','off');
+                end
+            end
+        end
+    end
+    
+    function onStep(~,~)
+        if ~isTxOn || ~strcmp(txMode,'step')
+            return;
+        end
+        step(tx_object, TX_Frame);
+    end
+
     function onClose(src,~)
+        isTxOn = false;
         if exist('tx_object','var')
             release(tx_object);
         end

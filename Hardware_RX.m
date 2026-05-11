@@ -1,19 +1,20 @@
 clear;close all;clc;
-Global_Parameters;
+Parameters_struct = Global_Parameters;
 
 %% Button setting
 figure('Name','RX','NumberTitle','off');
 button = uicontrol; % Generate GUI button
 set(button,'String','Stop !','Position',[1475 15 100 60]); % Add "Stop !" text
 set(gcf,'Units','centimeters','position',[1 2 49 24]); % Set the postion of GUI
+set(button,'Callback','setstate0_RX'); % Set the reaction of pushing button
 
 %% Hardware Parameters
 rx_object = sdrrx('AD936x',...
            'IPAddress',             Parameters_struct.IPAddress,...
            'CenterFrequency',       Parameters_struct.CenterFrequency,...
-           'BasebandSampleRate',    Parameters_struct.Bandwidth,...   % Bandwidth
+           'BasebandSampleRate',    Parameters_struct.Bandwidth,...
            'SamplesPerFrame',       3500,...
-           'ChannelMapping',        [1,2]);
+           'ChannelMapping',        [1 2]);
 
 Ready_Time = 0;
 scale = 1024;
@@ -21,7 +22,7 @@ scale = 1024;
 %% Main
 state = 1; % status Start
 Run_time_number = 1;
-while(state == 1)
+while (state == 1)
     try
     
     [data_rx_raw, dataLength, lostSample] = step(rx_object);
@@ -59,13 +60,13 @@ while(state == 1)
         hold on
         subplot(2,4,7),plot(RX_Payload_2_no_Equalizer,'*');
         hold off
-        title('Before Equalizer');axis([-8 8 -8 8]);axis square;
+        title('Before Equalizer');axis([-8 8 -8 8]); axis square;
         
         subplot(2,4,8),plot(RX_Payload_1_no_pilot,'*');
         hold on
         subplot(2,4,8),plot(RX_Payload_2_no_pilot,'*');
         hold off
-        title({'Demodulation';['BER = ',num2str(BER)]});axis([-1.5 1.5 -1.5 1.5]);axis square;
+        title({'Demodulation';['BER = ',num2str(BER)]}); axis([-1.5 1.5 -1.5 1.5]); axis square;
         
         Run_time_number = Run_time_number+1;
     end % Start
@@ -75,14 +76,11 @@ while(state == 1)
     end
     Run_time_number = Run_time_number+1;
     
-    % ----- Button Behavior -----%
-    set(button,'Callback','setstate0_RX'); % Set the reaction of pushing button
-    
-    catch
-        ErrorMessage = MException;
-        fprintf('Error Message : \n');
-        disp(ErrorMessage);
+    catch ME
         fprintf(2,'Error occurred & Stop Hardware\n');
+        fprintf(2,'Error message: %s\n', ME.message);
+        % Optional: more detailed stack trace
+        % fprintf(2,'%s\n', getReport(ME, 'extended'));
         
         % ----- Error Handling -----%
         % release(rx_object);
